@@ -1,20 +1,38 @@
+from database.book_database import BookDatabase
+from services.book_service import BookService
 from utils import helpers
+
+database = BookDatabase()
+service = BookService(database)
 
 
 def main():
     while True:
         try:
-            select_number = helpers.check_input_value(input(helpers.INFO_MESSAGE))
+            select_number = helpers.input_number_range(
+                input(helpers.SERVICE_INFO_MESSAGE), range(1, 6)
+            )
 
             match select_number:
                 case 1:
-                    print("1번 기능 실행")
+                    service.add_book()
                 case 2:
-                    print("2번 기능 실행")
+                    service.all_books()
                 case 3:
-                    print("3번 기능 실행")
+                    service.search_book()
                 case 4:
-                    print("4번 기능 실행")
+                    while True:
+                        sub_menu = helpers.input_number_range(
+                            input(helpers.RENT_CHECKOUT_INFO_MESSAGE), range(1, 3)
+                        )
+
+                        match sub_menu:
+                            case 1:
+                                service.rent_book()
+                            case 2:
+                                service.checkout_book()
+                            case 3:
+                                break
                 case 5:
                     return  # 프로그램 종료
         except ValueError as e:
