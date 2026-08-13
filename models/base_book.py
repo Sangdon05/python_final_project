@@ -8,6 +8,9 @@ class BaseBook:
         return f"도서명: {self.__title}, 저자: {self.__author}, ISBN: {self.__isbn}"
 
     def __eq__(self, other):
+        if other == None:
+            return False
+
         return self.__isbn == other.get_ibsn()
 
     def get_ibsn(self):

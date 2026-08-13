@@ -1,6 +1,7 @@
 import copy
 
 from models.book_data import BookData
+from utils.errors import DuplicatedISBN
 
 
 # 도서 목록 관리 데이터 베이스
@@ -10,7 +11,7 @@ class BookDatabase:
 
     def create(self, book_data: BookData):
         if self.search_isbn(book_data.get_ibsn()):
-            raise ValueError("중복 ISBN이 있습니다.")
+            raise DuplicatedISBN()
 
         self.__books.append(book_data)
 
@@ -28,5 +29,5 @@ class BookDatabase:
             return copy.copy(result[0])
 
     def update(self, book_data: BookData):
-        index = self.__books.index(book_data)
+        index = self.__books.index(book_data.get_book())
         self.__books[index] = book_data

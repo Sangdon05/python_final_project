@@ -1,5 +1,6 @@
 from database.book_database import BookData, BookDatabase
 from models.specialized_books import EBook, GeneralBook
+from utils.errors import DuplicatedISBN
 
 
 # database create 검증
@@ -35,7 +36,7 @@ def test_create_duplicate():
         database.create(
             BookData(GeneralBook("546", "ccc", 122, 120)),
         )
-    except ValueError:
+    except DuplicatedISBN:
         assert True
 
     assert len(database.all()) == len(books)

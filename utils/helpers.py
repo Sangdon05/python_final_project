@@ -10,7 +10,7 @@ RENT_CHECKOUT_INFO_MESSAGE = """
 2. 대여
 3. 취소
 """
-__INPUT_ERROR_MESSAGE = "1 ~ 5까지의 메뉴를 선택해 주세요."
+__INPUT_ERROR_MESSAGE = "메뉴를 선택해 주세요."
 
 
 def input_number_range(value: str, menu_range: range) -> int:
