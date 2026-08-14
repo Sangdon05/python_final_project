@@ -112,50 +112,37 @@ def input_book_info():
 
 
 def input_general_book():
-    step = 1
     book_info = {}
-    stpes = iter(
+    steps = iter(
         [input_book_name, input_book_author, input_book_isbn, input_book_pages]
     )
-    while step <= 4:
-        match step:
-            case 1:
-                if not input_book_name(book_info):
-                    continue
-            case 2:
-                if not input_book_author(book_info):
-                    continue
-            case 3:
-                if not input_book_isbn(book_info):
-                    continue
-            case 4:
-                if input_book_pages(book_info):
-                    continue
+    input = next(steps)
+    while True:
+        if not input(book_info):
+            continue
 
-        step += 1
+        try:
+            input = next(steps)
+        except StopIteration:
+            break
 
     return book_info
 
 
 def input_ebook():
-    step = 1
     book_info = {}
-    while step <= 4:
-        match step:
-            case 1:
-                if not input_book_name(book_info):
-                    continue
-            case 2:
-                if not input_book_author(book_info):
-                    continue
-            case 3:
-                if not input_book_isbn(book_info):
-                    continue
-            case 4:
-                if not input_book_letters(book_info):
-                    continue
+    steps = iter(
+        [input_book_name, input_book_author, input_book_isbn, input_book_letters]
+    )
+    input = next(steps)
+    while True:
+        if not input(book_info):
+            continue
 
-        step += 1
+        try:
+            input = next(steps)
+        except StopIteration:
+            break
 
     return book_info
 
@@ -197,7 +184,7 @@ def input_book_letters(book_info) -> bool:
         return False
 
     book_info["letters"] = int(letters)
-    return true
+    return True
 
 
 def input_book_pages(book_info) -> bool:
