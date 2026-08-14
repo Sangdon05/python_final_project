@@ -31,6 +31,7 @@ ADD_BOOK_INFO_MESSAGE = build_menu_message(
     SELECT_MENU_MESSAGE,
 )
 
+
 def input_number_range(value: str, menu_range: range) -> int:
     if value.isdigit():
         select_number = int(value)
