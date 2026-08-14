@@ -1,7 +1,7 @@
 from database.book_database import BookDatabase
 from models.specialized_books import EBook, GeneralBook
 from services.book_service import BookService
-from utils import helpers
+from utils.helpers import *
 
 database = BookDatabase()
 service = BookService(database)
@@ -10,9 +10,7 @@ service = BookService(database)
 def main():
     while True:
         try:
-            select_number = helpers.input_number_range(
-                input(helpers.SERVICE_INFO_MESSAGE), range(1, 6)
-            )
+            select_number = input_number_range(input(SERVICE_INFO_MESSAGE), range(1, 6))
 
             match select_number:
                 case 1:
@@ -36,8 +34,8 @@ def main():
 def rent_checkout_menu():
     while True:
         try:
-            sub_menu = helpers.input_number_range(
-                input(helpers.RENT_CHECKOUT_INFO_MESSAGE), range(1, 4)
+            sub_menu = input_number_range(
+                input(RENT_CHECKOUT_INFO_MESSAGE), range(1, 4)
             )
         except ValueError as e:
             print(e)
@@ -61,7 +59,7 @@ def rent_checkout_menu():
 def input_rent_book():
     while True:
         try:
-            isbn = int(input("대여할 도서의 ISBN을 입력해 주세요.: "))
+            isbn = int(input("대여할 도서의 ISBN을 입력해 주세요: "))
 
             return service.rent_book(isbn)
         except ValueError as e:
@@ -72,7 +70,7 @@ def input_rent_book():
 def input_checkout_book():
     while True:
         try:
-            isbn = int(input("반납할 도서의 ISBN을 입력해 주세요.: "))
+            isbn = int(input("반납할 도서의 ISBN을 입력해 주세요: "))
 
             return service.checkout_book(isbn)
         except ValueError as e:
@@ -84,7 +82,7 @@ def input_search_isbn():
     # 제목, 저자, ISBN을 통한 검색 확장 필요
     while True:
         try:
-            isbn = int(input("ISBN을 입력해 주세요.: "))
+            isbn = int(input("ISBN을 입력해 주세요: "))
 
             return service.search_book(isbn)
         except ValueError as e:
@@ -95,9 +93,7 @@ def input_search_isbn():
 def input_book_info():
     while True:
         try:
-            book_type = helpers.input_number_range(
-                input("1. 일반 단행본\n2. 전자 도서\n3. 취소"), range(1, 4)
-            )
+            book_type = input_number_range(input(ADD_BOOK_INFO_MESSAGE), range(1, 4))
 
             match book_type:
                 case 1:
@@ -118,36 +114,23 @@ def input_book_info():
 def input_general_book():
     step = 1
     book_info = {}
+    stpes = iter(
+        [input_book_name, input_book_author, input_book_isbn, input_book_pages]
+    )
     while step <= 4:
         match step:
             case 1:
-                title = input("도서명을 입력해 주세요.: ")
-
-                if not title:
+                if not input_book_name(book_info):
                     continue
-
-                book_info["title"] = title
             case 2:
-                author = input("저자명을 입력해 주세요.: ")
-
-                if not author:
+                if not input_book_author(book_info):
                     continue
-
-                book_info["author"] = author
             case 3:
-                isbn = input("ISBN 번호를 입력해 주세요.: ")
-
-                if not isbn.isdigit() or not isbn:
+                if not input_book_isbn(book_info):
                     continue
-
-                book_info["isbn"] = int(isbn)
             case 4:
-                total_pages = input("총 페이지수를 입력해 주세요.: ")
-
-                if not total_pages.isdigit() or not total_pages:
+                if input_book_pages(book_info):
                     continue
-
-                book_info["pages"] = int(total_pages)
 
         step += 1
 
@@ -160,37 +143,71 @@ def input_ebook():
     while step <= 4:
         match step:
             case 1:
-                title = input("도서명을 입력해 주세요.: ")
-
-                if not title:
+                if not input_book_name(book_info):
                     continue
-
-                book_info["title"] = title
             case 2:
-                author = input("저자명을 입력해 주세요.: ")
-
-                if not author:
+                if not input_book_author(book_info):
                     continue
-
-                book_info["author"] = author
             case 3:
-                isbn = input("ISBN 번호를 입력해 주세요.: ")
-
-                if not isbn.isdigit() or not isbn:
+                if not input_book_isbn(book_info):
                     continue
-
-                book_info["isbn"] = int(isbn)
             case 4:
-                letters = input("총 글자수를 입력해 주세요.: ")
-
-                if not letters.isdigit() or not letters:
+                if not input_book_letters(book_info):
                     continue
-
-                book_info["letters"] = int(letters)
 
         step += 1
 
     return book_info
+
+
+def input_book_name(book_info) -> bool:
+    title = input("도서명을 입력해 주세요: ")
+
+    if not title:
+        return False
+
+    book_info["title"] = title
+    return True
+
+
+def input_book_author(book_info) -> bool:
+    author = input("저자명을 입력해 주세요: ")
+
+    if not author:
+        return False
+
+    book_info["author"] = author
+    return True
+
+
+def input_book_isbn(book_info) -> bool:
+    isbn = input("ISBN 번호를 입력해 주세요: ")
+
+    if not isbn.isdigit() or not isbn:
+        return False
+
+    book_info["isbn"] = int(isbn)
+    return True
+
+
+def input_book_letters(book_info) -> bool:
+    letters = input("총 글자수를 입력해 주세요: ")
+
+    if not letters.isdigit() or not letters:
+        return False
+
+    book_info["letters"] = int(letters)
+    return true
+
+
+def input_book_pages(book_info) -> bool:
+    total_pages = input("총 페이지수를 입력해 주세요: ")
+
+    if not total_pages.isdigit() or not total_pages:
+        return False
+
+    book_info["pages"] = int(total_pages)
+    return True
 
 
 if __name__ == "__main__":
