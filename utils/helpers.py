@@ -8,7 +8,8 @@ SERVICE_INFO_MESSAGE = build_menu_message(
 2. 전체 도서 조회
 3. 도서 검색
 4. 대여/반납 처리
-5. 종료\
+5. 통계 조회
+6. 종료\
     """,
     SELECT_MENU_MESSAGE,
 )

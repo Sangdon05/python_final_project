@@ -1,6 +1,7 @@
 from database.book_database import BookDatabase
 from models.specialized_books import EBook, GeneralBook
 from services.book_service import BookService
+from services.log_service import fetch_stats, write_log
 from utils.helpers import *
 
 database = BookDatabase()
@@ -10,7 +11,7 @@ service = BookService(database)
 def main():
     while True:
         try:
-            select_number = input_number_range(input(SERVICE_INFO_MESSAGE), range(1, 6))
+            select_number = input_number_range(input(SERVICE_INFO_MESSAGE), range(1, 7))
 
             match select_number:
                 case 1:
@@ -25,6 +26,8 @@ def main():
                 case 4:
                     rent_checkout_menu()
                 case 5:
+                    request_stats()
+                case 6:
                     return  # 프로그램 종료
         except ValueError as e:
             print(e)
@@ -46,14 +49,35 @@ def rent_checkout_menu():
                 book = input_checkout_book()
                 if book:
                     print("도서 반납이 완료되었습니다.")
+                    write_log(book.get_ibsn(), False)
                 break
             case 2:
                 book = input_rent_book()
                 if book:
                     print("도서 대여가 완료되었습니다.")
+                    write_log(book.get_ibsn(), True)
                 break
             case 3:
                 break
+
+
+def request_stats():
+    monthly, most_isbn = fetch_stats()
+
+    if not monthly or not most_isbn:
+        return
+
+    monthly_message = build_menu_message(
+        "월간 대여 통계",
+        "\n".join([(f"{month[0]} {month[1]:>5}") for month in monthly]),
+    )
+    print(monthly_message)
+
+    most_message = build_menu_message(
+        "가장 많이 대여된 도서",
+        service.search_book(most_isbn).get_book(),
+    )
+    print(most_message)
 
 
 def input_rent_book():
