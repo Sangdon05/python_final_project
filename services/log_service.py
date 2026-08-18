@@ -9,7 +9,7 @@ def write_log(isbn, is_rent):
     __logs.append((isbn, is_rent, datetime.now()))
 
 
-def fetch_stats():
+def fetch_stats_with_pandas():
     # pandas 사용
 
     # 월간 대여 통계
@@ -18,6 +18,11 @@ def fetch_stats():
 
     # 가장 많이 대여된 도서 통계
     # count?
+    pass
+
+
+def fetch_stats():
+    # 기본 기능 사용
     pass
 
 
