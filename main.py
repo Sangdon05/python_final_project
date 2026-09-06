@@ -1,4 +1,5 @@
 from database.book_database import BookDatabase
+from models.book_data import BookData
 from models.specialized_books import EBook, GeneralBook
 from services.book_service import BookService
 from services.log_service import fetch_stats, write_log
@@ -17,12 +18,17 @@ def main():
                 case 1:
                     input_book_info()
                 case 2:
-                    for book in service.all_books():
-                        print(book)
+                    books = service.all_books()
+                    if books:
+                        for book in books:
+                            print(book)
+                    else:
+                        print("등록된 도서가 없습니다.")
                 case 3:
-                    book = input_search_isbn()
-                    if book:
-                        print(book)
+                    books = input_search()
+                    if books:
+                        for book in books:
+                            print(book)
                 case 4:
                     rent_checkout_menu()
                 case 5:
@@ -65,6 +71,7 @@ def request_stats():
     monthly, most_isbn = fetch_stats()
 
     if not monthly or not most_isbn:
+        print("도서 대여/반납한 데이터가 없습니다.")
         return
 
     monthly_message = build_menu_message(
@@ -75,7 +82,7 @@ def request_stats():
 
     most_message = build_menu_message(
         "가장 많이 대여된 도서",
-        service.search_book(most_isbn).get_book(),
+        service.search_book_with_isbn(most_isbn).get_book(),
     )
     print(most_message)
 
@@ -108,11 +115,20 @@ def input_search_isbn():
         try:
             isbn = int(input("ISBN을 입력해 주세요: "))
 
-            return service.search_book(isbn)
+            return service.search_book_with_isbn(isbn)
         except ValueError as e:
             print(e)
             break
 
+def input_search():
+    while True:
+        try:
+            input_data = input("검색어를 입력해 주세요: ")
+
+            return service.search_book_with_keyword(input_data)
+        except ValueError as e:
+            print(e)
+            break
 
 def input_book_info():
     while True:

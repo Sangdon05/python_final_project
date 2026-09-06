@@ -47,15 +47,22 @@ class BookService:
         except TypeError:
             raise ValueError("도서 데이터로 입력해 주세요.")
 
-    # 도서 검색
-    def search_book(self, isbn: int) -> BookData:
+    # ISBN으로 도서 검색
+    def search_book_with_isbn(self, isbn: int) -> BookData:
         book = self.__database.search_isbn(isbn)
 
         if book:
             return book
         else:
             raise ValueError("도서가 존재하지 않습니다.")
+    def search_book_with_keyword(self, keyword: str) -> list[BookData]:
+        books = self.__database.search(keyword)
+
+        if books:
+            return books
+        else:
+            raise ValueError("도서가 존재하지 않습니다.")
 
     # 전체 도서 조히
-    def all_books(self) -> [BookData]:
+    def all_books(self) -> list[BookData]:
         return self.__database.all()

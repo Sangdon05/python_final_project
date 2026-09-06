@@ -15,3 +15,9 @@ class BaseBook:
 
     def get_ibsn(self):
         return self.__isbn
+
+    def get_title(self) -> str:
+        return self.__title
+
+    def get_author(self) -> str:
+        return self.__author

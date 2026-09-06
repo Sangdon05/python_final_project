@@ -20,10 +20,10 @@ def test_search_book():
     service.add_book(GeneralBook("123", "aaaa", 120, 100))
     service.add_book(EBook("789", "aaaa", 123, 15000))
 
-    assert service.search_book(120) != None
+    assert service.search_book_with_isbn(120) != None
 
     try:
-        assert service.search_book(0000) == None
+        assert service.search_book_with_isbn(0000) == None
     except ValueError:
         assert True
 
@@ -45,7 +45,7 @@ def test_rent_book():
     except ValueError:
         assert True
 
-    assert service.search_book(120).is_rent == True
+    assert service.search_book_with_isbn(120).is_rent == True
 
     try:
         assert service.rent_book(999) != None
@@ -75,4 +75,4 @@ def test_checkout_book():
     except ValueError:
         assert False
 
-    assert service.search_book(120).is_rent == False
+    assert service.search_book_with_isbn(120).is_rent == False

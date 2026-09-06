@@ -6,7 +6,7 @@ __logs = []
 
 
 def write_log(isbn, is_rent, event_time=None):
-    __logs.append((isbn, is_rent, event_time or datetime.now()))
+    __logs.append((isbn, is_rent, event_time or datetime.now().astimezone()))
 
 
 def fetch_stats_with_pandas():
@@ -28,15 +28,16 @@ def fetch_stats_with_pandas():
         .items()
     )
 
-    return sorted_count_monthly, int(rent_events[0].value_counts().idxmax())
+    return sorted_count_monthly, int(rent_events.iloc[:, 0].value_counts().idxmax())
 
 
+# python 기본 기능 사용
 def fetch_stats():
     if not __logs:
         return None, None
 
-    # python 기본 기능 사용
-    rent_events = [*filter(lambda x: x[1] == True, __logs)]
+
+    rent_events = [x for x in __logs if x[1] == True]
 
     # 월간 대여 통계
     # fliter is_rent == True
@@ -44,13 +45,13 @@ def fetch_stats():
     # dict에 추가하여 value를 횟수로하여 증가 시킨다.
     # 결과 [('년-월-일', 횟수)]
 
-    dates = [*(x[2].strftime("%Y-%m-%d") for x in rent_events)]
+    dates = [x[2].strftime("%Y-%m-%d") for x in rent_events]
     count_monthly = {}
     for x in set(dates):
         count_monthly.update({x: dates.count(x)})
 
     sorted_count_monthly = sorted(
-        [*count_monthly.items()], key=lambda x: x[0], reverse=True
+        count_monthly.items(), key=lambda x: x[0], reverse=True
     )
 
     # 가장 많이 대여된 도서 통계
@@ -58,12 +59,12 @@ def fetch_stats():
     # set(isbn)
     # list.count(isbn)
     # 결과 'best_rented_book' = int
-    isbns = [*(x[0] for x in rent_events)]
+    isbns = [x[0] for x in rent_events]
     count_isbn = {}
     for x in set(isbns):
         count_isbn.update({x: isbns.count(x)})
 
-    return sorted_count_monthly, max([*count_isbn.items()], key=lambda x: x[1])[0]
+    return sorted_count_monthly, max(list(count_isbn.items()), key=lambda x: x[1])[0]
 
 
 if __name__ == "__main__":
